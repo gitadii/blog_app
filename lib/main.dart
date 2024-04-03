@@ -1,3 +1,5 @@
+import 'package:blog_app/core/theme/theme.dart';
+import 'package:blog_app/features/auth/presentation/pages/signup_page.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -11,12 +13,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      title: 'Blog it',
+      debugShowCheckedModeBanner: false,
+      theme: AppTheme.darkThemeMode,
+      home: const SignUpPage(),
     );
   }
 }
