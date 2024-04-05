@@ -5,22 +5,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:routemaster/routemaster.dart';
 
-class SignUpPage extends StatefulWidget {
-  const SignUpPage({super.key});
+class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
 
   @override
-  State<SignUpPage> createState() => _SignUpPageState();
+  State<LoginPage> createState() => _LoginPageState();
 }
 
-class _SignUpPageState extends State<SignUpPage> {
+class _LoginPageState extends State<LoginPage> {
   final formKey = GlobalKey<FormState>();
-  final nameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
   @override
   void dispose() {
-    nameController.dispose();
     emailController.dispose();
     passwordController.dispose();
     super.dispose();
@@ -32,7 +30,6 @@ class _SignUpPageState extends State<SignUpPage> {
       key: formKey,
       child: SafeArea(
         child: Scaffold(
-          appBar: AppBar(),
           backgroundColor: const Color(0xff17171B),
           body: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 15.0),
@@ -40,18 +37,12 @@ class _SignUpPageState extends State<SignUpPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Text(
-                  'Sign up.',
+                  'Sign in.',
                   style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
                     fontSize: 50,
                   ),
-                ),
-                const SizedBox(height: 30.0),
-                AuthField(
-                  hint: 'Name',
-                  controller: nameController,
-                  isObscure: false,
                 ),
                 const SizedBox(height: 15.0),
                 AuthField(
@@ -67,19 +58,19 @@ class _SignUpPageState extends State<SignUpPage> {
                 ),
                 const SizedBox(height: 10.0),
                 AuthGradientButton(
-                  text: 'Sign up',
+                  text: 'Sign in',
                   onPressed: () {},
                 ),
                 const SizedBox(),
                 GestureDetector(
-                  onTap: () => Routemaster.of(context).pop(),
+                  onTap: () => Routemaster.of(context).push('/sign-up'),
                   child: RichText(
                     text: TextSpan(
-                      text: "Already have an account? ",
+                      text: "Don't have an account? ",
                       style: Theme.of(context).textTheme.titleMedium,
                       children: [
                         TextSpan(
-                          text: "Sign In",
+                          text: "Sign Up",
                           style: Theme.of(context)
                               .textTheme
                               .titleMedium
