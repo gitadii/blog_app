@@ -74,10 +74,12 @@ class _LoginPageState extends State<LoginPage> {
                       text: 'Sign in',
                       onPressed: () {
                         if (formKey.currentState!.validate()) {
-                          context.read<AuthBloc>().add(AuthLogIn(
-                                email: emailController.text.trim(),
-                                password: passwordController.text.trim(),
-                              ));
+                          context.read<AuthBloc>().add(
+                                AuthLogIn(
+                                  email: emailController.text.trim(),
+                                  password: passwordController.text.trim(),
+                                ),
+                              );
                         }
                       },
                     ),

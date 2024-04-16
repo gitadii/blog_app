@@ -18,15 +18,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         _userLogin = userLogIn,
         super(AuthInitial()) {
     // When there is an event of AuthSignUp then do this :
-    on<AuthSignUp>((event, emit) async {
-      _onAuthSignUp(event, emit);
-    });
+    on<AuthSignUp>(_onAuthSignUp);
 
-    on<AuthLogIn>(
-      (event, emit) async {
-        _onAuthLogIn(event, emit);
-      },
-    );
+    on<AuthLogIn>(_onAuthLogIn);
   }
 
 // FUCNTIONS TO MAKE CODE CLEAN
@@ -58,9 +52,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     res.fold(
       (l) => emit(AuthFailure(l.error)),
-      (r) => emit(
-        AuthSucess(r),
-      ),
+      (r) => emit(AuthSucess(r)),
     );
   }
 }
