@@ -2,6 +2,7 @@ import 'package:blog_app/core/credentials/supabase_creds.dart';
 import 'package:blog_app/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:blog_app/features/auth/data/repository/auth_repository_impl.dart';
 import 'package:blog_app/features/auth/domain/repository/auth_repository.dart';
+import 'package:blog_app/features/auth/domain/usecases/user_login.dart';
 import 'package:blog_app/features/auth/domain/usecases/user_sign_up.dart';
 import 'package:blog_app/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -23,25 +24,33 @@ Future<void> initDependencies() async {
 
 void _initAuth() {
   // Dependency of RemoteDataSource
-  serviceLocator.registerFactory<AuthRemoteDataSource>(
-    () => AuthRemoteDataSourceImpl(
-      supabaseClient: serviceLocator(),
-    ),
-  );
+  serviceLocator
+    ..registerFactory<AuthRemoteDataSource>(
+      () => AuthRemoteDataSourceImpl(
+        supabaseClient: serviceLocator(),
+      ),
+    )
 
-  // Dep of AuthRepo
-  serviceLocator.registerFactory<AuthRepository>(
-    () => AuthRepositoryImpl(
-      remoteDataSource: serviceLocator(),
-    ),
-  );
+    // Dep of AuthRepo
+    ..registerFactory<AuthRepository>(
+      () => AuthRepositoryImpl(
+        remoteDataSource: serviceLocator(),
+      ),
+    )
 
-  // Dep of UserSignUp
-  serviceLocator.registerFactory(
-    () => UserSignUp(
-      authRepository: serviceLocator(),
-    ),
-  );
+    // Dep of UserSignUp
+    ..registerFactory(
+      () => UserSignUp(
+        authRepository: serviceLocator(),
+      ),
+    )
+
+    // Dep of UserLogIn
+    ..registerFactory(
+      () => UserLogIn(
+        authRepository: serviceLocator(),
+      ),
+    );
 
   // Dep of AuthBloc
   // It is LazySingleton because we dont want multiple states in our app, e.g. it the app is in Loading state and another
@@ -49,6 +58,7 @@ void _initAuth() {
   serviceLocator.registerLazySingleton(
     () => AuthBloc(
       userSignUp: serviceLocator(),
+      userLogIn: serviceLocator(),
     ),
   );
 }

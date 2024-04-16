@@ -72,7 +72,14 @@ class _LoginPageState extends State<LoginPage> {
                     const SizedBox(height: 10.0),
                     AuthGradientButton(
                       text: 'Sign in',
-                      onPressed: () {},
+                      onPressed: () {
+                        if (formKey.currentState!.validate()) {
+                          context.read<AuthBloc>().add(AuthLogIn(
+                                email: emailController.text.trim(),
+                                password: passwordController.text.trim(),
+                              ));
+                        }
+                      },
                     ),
                     const SizedBox(),
                     GestureDetector(

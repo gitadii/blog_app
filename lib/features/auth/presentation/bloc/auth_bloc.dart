@@ -1,4 +1,5 @@
 import 'package:blog_app/features/auth/domain/entities/user_entity.dart';
+import 'package:blog_app/features/auth/domain/usecases/user_login.dart';
 import 'package:blog_app/features/auth/domain/usecases/user_sign_up.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,26 +9,58 @@ part 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final UserSignUp _userSignUp;
-  AuthBloc({required UserSignUp userSignUp})
-      : _userSignUp = userSignUp,
+  final UserLogIn _userLogin;
+
+  AuthBloc({
+    required UserSignUp userSignUp,
+    required UserLogIn userLogIn,
+  })  : _userSignUp = userSignUp,
+        _userLogin = userLogIn,
         super(AuthInitial()) {
     // When there is an event of AuthSignUp then do this :
     on<AuthSignUp>((event, emit) async {
-      // Until the signUp is complete the app should be in Loading state
-      emit(AuthLoading());
-
-      final res = await _userSignUp(
-        UserSignUpParams(
-          name: event.name,
-          email: event.email,
-          password: event.password,
-        ),
-      );
-
-      res.fold(
-        (l) => emit(AuthFailure(l.error)),
-        (r) => emit(AuthSucess(r)),
-      );
+      _onAuthSignUp(event, emit);
     });
+
+    on<AuthLogIn>(
+      (event, emit) async {
+        _onAuthLogIn(event, emit);
+      },
+    );
+  }
+
+// FUCNTIONS TO MAKE CODE CLEAN
+  void _onAuthSignUp(AuthSignUp event, Emitter<AuthState> emit) async {
+// Until the signUp is complete the app should be in Loading state
+    emit(AuthLoading());
+
+    final res = await _userSignUp(
+      UserSignUpParams(
+        name: event.name,
+        email: event.email,
+        password: event.password,
+      ),
+    );
+
+    res.fold(
+      (l) => emit(AuthFailure(l.error)),
+      (r) => emit(AuthSucess(r)),
+    );
+  }
+
+  void _onAuthLogIn(AuthLogIn event, Emitter<AuthState> emit) async {
+    emit(AuthLoading());
+
+    final res = await _userLogin(UserLoginParams(
+      email: event.email,
+      password: event.password,
+    ));
+
+    res.fold(
+      (l) => emit(AuthFailure(l.error)),
+      (r) => emit(
+        AuthSucess(r),
+      ),
+    );
   }
 }

@@ -9,6 +9,7 @@ abstract interface class AuthRemoteDataSource {
     required String email,
     required String password,
   });
+
   Future<UserEntity> logInWithEmailPass({
     required String email,
     required String password,
@@ -21,9 +22,19 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
   @override
   Future<UserEntity> logInWithEmailPass(
-      {required String email, required String password}) {
-    // TODO: implement logInWithEmailPass
-    throw UnimplementedError();
+      {required String email, required String password}) async {
+    try {
+      final responce = await supabaseClient.auth.signInWithPassword(
+        password: password,
+        email: email,
+      );
+      if (responce.user == null) {
+        throw ServerExceptions(message: "The User is null!");
+      }
+      return UserModel.fromJson(responce.user!.toJson());
+    } catch (e) {
+      throw ServerExceptions(message: e.toString());
+    }
   }
 
   @override
