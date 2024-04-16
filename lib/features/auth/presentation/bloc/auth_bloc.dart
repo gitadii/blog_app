@@ -13,6 +13,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         super(AuthInitial()) {
     // When there is an event of AuthSignUp then do this :
     on<AuthSignUp>((event, emit) async {
+      // Until the signUp is complete the app should be in Loading state
+      emit(AuthLoading());
+
       final res = await _userSignUp(
         UserSignUpParams(
           name: event.name,
