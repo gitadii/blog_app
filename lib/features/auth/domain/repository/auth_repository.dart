@@ -15,4 +15,7 @@ abstract interface class AuthRepository {
     required String email,
     required String password,
   });
+
+  // Getting userData to check if the user is loggedIn or not
+  Future<Either<Failure, UserEntity>> currentUser();
 }

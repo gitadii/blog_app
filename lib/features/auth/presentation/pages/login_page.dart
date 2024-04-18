@@ -1,6 +1,6 @@
 import 'package:blog_app/core/common/widgets/loader.dart';
 import 'package:blog_app/core/theme/app_pallet.dart';
-import 'package:blog_app/core/utils/show_snakbar.dart';
+import 'package:blog_app/core/utils/show_snackbar.dart';
 import 'package:blog_app/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:blog_app/features/auth/presentation/widgets/auth_field.dart';
 import 'package:blog_app/features/auth/presentation/widgets/auth_gradient_button.dart';
@@ -29,23 +29,23 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<AuthBloc, AuthState>(
-      listener: (context, state) {
-        if (state is AuthFailure) {
-          showSnakBar(context, state.message);
-        }
-      },
-      builder: (context, state) {
-        if (state is AuthLoading) {
-          return const Loader();
-        }
-        return Form(
-          key: formKey,
-          child: SafeArea(
-            child: Scaffold(
-              backgroundColor: const Color(0xff17171B),
-              body: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15.0),
+    return Scaffold(
+      backgroundColor: const Color(0xff17171B),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 15.0),
+        child: BlocConsumer<AuthBloc, AuthState>(
+          listener: (context, state) {
+            if (state is AuthFailure) {
+              showSnackBar(context, state.message);
+            }
+          },
+          builder: (context, state) {
+            if (state is AuthLoading) {
+              return const Loader();
+            }
+            return Form(
+              key: formKey,
+              child: SafeArea(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -107,10 +107,10 @@ class _LoginPageState extends State<LoginPage> {
                   ],
                 ),
               ),
-            ),
-          ),
-        );
-      },
+            );
+          },
+        ),
+      ),
     );
   }
 }

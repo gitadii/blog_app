@@ -2,6 +2,7 @@ import 'package:blog_app/core/credentials/supabase_creds.dart';
 import 'package:blog_app/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:blog_app/features/auth/data/repository/auth_repository_impl.dart';
 import 'package:blog_app/features/auth/domain/repository/auth_repository.dart';
+import 'package:blog_app/features/auth/domain/usecases/current_user.dart';
 import 'package:blog_app/features/auth/domain/usecases/user_login.dart';
 import 'package:blog_app/features/auth/domain/usecases/user_sign_up.dart';
 import 'package:blog_app/features/auth/presentation/bloc/auth_bloc.dart';
@@ -50,6 +51,13 @@ void _initAuth() {
       () => UserLogIn(
         authRepository: serviceLocator(),
       ),
+    )
+
+    // Dep of CurrentUser
+    ..registerFactory(
+      () => CurrentUser(
+        authRepository: serviceLocator(),
+      ),
     );
 
   // Dep of AuthBloc
@@ -59,6 +67,7 @@ void _initAuth() {
     () => AuthBloc(
       userSignUp: serviceLocator(),
       userLogIn: serviceLocator(),
+      currentUser: serviceLocator(),
     ),
   );
 }
