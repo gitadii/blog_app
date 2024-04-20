@@ -1,6 +1,6 @@
 import 'package:blog_app/core/error/exceptions.dart';
 import 'package:blog_app/features/auth/data/Models/user_model.dart';
-import 'package:blog_app/features/auth/domain/entities/user_entity.dart';
+import 'package:blog_app/core/common/entities/user_entity.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 abstract interface class AuthRemoteDataSource {
@@ -41,7 +41,9 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       if (responce.user == null) {
         throw ServerExceptions(message: "The User is null!");
       }
-      return UserModel.fromJson(responce.user!.toJson());
+      return UserModel.fromJson(responce.user!.toJson()).copyWith(
+        email: currentUserSession!.user.email,
+      );
     } catch (e) {
       throw ServerExceptions(message: e.toString());
     }
@@ -61,7 +63,9 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       if (responce.user == null) {
         throw ServerExceptions(message: "The User is null!");
       }
-      return UserModel.fromJson(responce.user!.toJson());
+      return UserModel.fromJson(responce.user!.toJson()).copyWith(
+        email: currentUserSession!.user.email,
+      );
     } catch (e) {
       throw ServerExceptions(message: e.toString());
     }
@@ -77,7 +81,9 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
               currentUserSession!.user.id,
             );
 
-        return UserModel.fromJson(userData.first);
+        return UserModel.fromJson(userData.first).copyWith(
+          email: currentUserSession!.user.email,
+        );
       }
       return null;
     } catch (e) {

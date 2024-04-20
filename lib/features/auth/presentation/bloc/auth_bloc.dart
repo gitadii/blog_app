@@ -1,5 +1,6 @@
+import 'package:blog_app/core/common/cubits/app_user/app_user_cubit.dart';
 import 'package:blog_app/core/usecases/usecase_interf.dart';
-import 'package:blog_app/features/auth/domain/entities/user_entity.dart';
+import 'package:blog_app/core/common/entities/user_entity.dart';
 import 'package:blog_app/features/auth/domain/usecases/current_user.dart';
 import 'package:blog_app/features/auth/domain/usecases/user_login.dart';
 import 'package:blog_app/features/auth/domain/usecases/user_sign_up.dart';
@@ -13,14 +14,17 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final UserSignUp _userSignUp;
   final UserLogIn _userLogin;
   final CurrentUser _currentUser;
+  final AppUserCubit _appUserCubit;
 
   AuthBloc({
     required UserSignUp userSignUp,
     required UserLogIn userLogIn,
     required CurrentUser currentUser,
+    required AppUserCubit appUserCubit,
   })  : _userSignUp = userSignUp,
         _userLogin = userLogIn,
         _currentUser = currentUser,
+        _appUserCubit = appUserCubit,
         super(AuthInitial()) {
     // When there is an event of AuthSignUp then do this :
     on<AuthSignUp>(_onAuthSignUp);
@@ -46,7 +50,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     res.fold(
       (l) => emit(AuthFailure(l.message)),
-      (r) => emit(AuthSucess(r)),
+      (r) => _emitAuthSuccess,
     );
   }
 
@@ -63,7 +67,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     res.fold(
       (l) => emit(AuthFailure(l.message)),
-      (r) => emit(AuthSucess(r)),
+      (r) => _emitAuthSuccess,
     );
   }
 
@@ -73,9 +77,17 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async {
     final res = await _currentUser(NoParams());
 
-    res.fold((l) => emit(AuthFailure(l.message)), (r) {
-      print(r.id);
-      emit(AuthSucess(r));
-    });
+    res.fold(
+      (l) => emit(AuthFailure(l.message)),
+      (r) => _emitAuthSuccess(r, emit),
+    );
+  }
+
+  void _emitAuthSuccess(
+    UserEntity userEntity,
+    Emitter<AuthState> emit,
+  ) async {
+    _appUserCubit.updateUser(userEntity);
+    emit(AuthSucess(userEntity));
   }
 }

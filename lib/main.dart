@@ -1,3 +1,4 @@
+import 'package:blog_app/core/common/cubits/app_user/app_user_cubit.dart';
 import 'package:blog_app/core/theme/theme.dart';
 import 'package:blog_app/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:blog_app/init_dependencies.dart';
@@ -12,14 +13,19 @@ void main() async {
 
   await initDependencies();
 
-  runApp(MultiBlocProvider(
-    providers: [
-      BlocProvider(
-        create: (_) => serviceLocator<AuthBloc>(),
-      )
-    ],
-    child: const MyApp(),
-  ));
+  runApp(
+    MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (_) => serviceLocator<AppUserCubit>(),
+        ),
+        BlocProvider(
+          create: (_) => serviceLocator<AuthBloc>(),
+        ),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatefulWidget {
@@ -44,7 +50,17 @@ class _MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       theme: AppTheme.darkThemeMode,
       routerDelegate: RoutemasterDelegate(
-        routesBuilder: (context) => loggedOutRoute,
+        routesBuilder: (context) {
+          // Accessing the state of AppUserCubit
+          final appUserCubitState = context.watch<AppUserCubit>().state;
+
+          // Deciding the route accordingly
+          if (appUserCubitState is AppUserLoggedIn) {
+            return loggedInRoute;
+          } else {
+            return loggedOutRoute;
+          }
+        },
       ),
       routeInformationParser: const RoutemasterParser(),
     );
