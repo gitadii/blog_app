@@ -27,6 +27,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         _appUserCubit = appUserCubit,
         super(AuthInitial()) {
     // When there is an event of AuthSignUp then do this :
+    // on<AuthEvent>(_emitAuthLoading as EventHandler<AuthEvent, AuthState>);
+    on<AuthEvent>((_, emit) => emit(
+        AuthLoading())); // This will emit the Loading state whenever there is a state change
     on<AuthSignUp>(_onAuthSignUp);
     on<AuthLogIn>(_onAuthLogIn);
     on<AuthIsUserLoggedIn>(_onAuthIsUserLoggedIn);
@@ -38,7 +41,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Emitter<AuthState> emit,
   ) async {
 // Until the signUp is complete the app should be in Loading state
-    emit(AuthLoading());
+    // emit(AuthLoading());
 
     final res = await _userSignUp(
       UserSignUpParams(
@@ -58,7 +61,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     AuthLogIn event,
     Emitter<AuthState> emit,
   ) async {
-    emit(AuthLoading());
+    // emit(AuthLoading());
 
     final res = await _userLogin(UserLoginParams(
       email: event.email,
@@ -90,4 +93,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     _appUserCubit.updateUser(userEntity);
     emit(AuthSucess(userEntity));
   }
+
+  // void _emitAuthLoading(Emitter<AuthState> emit) {
+  //   emit(AuthLoading());
+  // }
 }
