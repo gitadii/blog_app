@@ -1,4 +1,5 @@
-import 'package:blog_app/features/auth/presentation/pages/home_page.dart';
+import 'package:blog_app/features/bloc/presentation/pages/add_new_blog_page.dart';
+import 'package:blog_app/features/bloc/presentation/pages/blog_page.dart';
 import 'package:blog_app/features/auth/presentation/pages/login_page.dart';
 import 'package:blog_app/features/auth/presentation/pages/signup_page.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +16,7 @@ final loggedOutRoute = RouteMap(
 // When the user is logged in
 final loggedInRoute = RouteMap(
   routes: {
-    '/': (_) => const MaterialPage(child: HomePage()),
+    '/': (_) => const MaterialPage(child: BlogPage()),
+    '/add-new-blog': (_) => const MaterialPage(child: AddNewBlogPage()),
   },
 );
