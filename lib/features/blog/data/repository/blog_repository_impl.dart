@@ -2,10 +2,10 @@ import 'dart:io';
 
 import 'package:blog_app/core/error/exceptions.dart';
 import 'package:blog_app/core/error/failure.dart';
-import 'package:blog_app/features/bloc/data/datasources/blog_remote_data_source.dart';
-import 'package:blog_app/features/bloc/data/models/blog_model.dart';
-import 'package:blog_app/features/bloc/domain/entities/blog_entity.dart';
-import 'package:blog_app/features/bloc/domain/repositories/blog_repository.dart';
+import 'package:blog_app/features/blog/data/datasources/blog_remote_data_source.dart';
+import 'package:blog_app/features/blog/data/models/blog_model.dart';
+import 'package:blog_app/features/blog/domain/entities/blog_entity.dart';
+import 'package:blog_app/features/blog/domain/repositories/blog_repository.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:uuid/uuid.dart';
 
@@ -16,22 +16,23 @@ class BlogRepositoryImpl implements BlogRepository {
   @override
   Future<Either<Failure, BlogEntity>> uploadBlog({
     required File imageUrl,
-    required String blogTitle,
-    required String blogContent,
+    required String title,
+    required String content,
     required String posterId,
-    required List<String> blogCategories,
+    required List<String> topics,
   }) async {
     try {
       BlogModel blogModel = BlogModel(
         id: const Uuid().v1(), // Generating a random uuid
         imageUrl: '',
         posterId: posterId,
-        blogTitle: blogTitle,
-        blogContent: blogContent,
-        blogCatrgories: blogCategories,
+        title: title,
+        content: content,
+        topics: topics,
         updatedAt: DateTime.now(),
       );
 
+      print(blogModel.id);
       final image = await blogRemoteDataSource.uploadBlogImg(
         image: imageUrl,
         blogModel: blogModel,

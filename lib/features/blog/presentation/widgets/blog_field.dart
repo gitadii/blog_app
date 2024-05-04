@@ -12,12 +12,18 @@ class BlogField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
+    return TextFormField(
       controller: controller,
       decoration: InputDecoration(
         hintText: hint,
       ),
       maxLines: null,
+      validator: (value) {
+        if (value!.isEmpty) {
+          return "$hint is missing";
+        }
+        return null;
+      },
     );
   }
 }

@@ -1,17 +1,13 @@
 import 'package:flutter/material.dart';
 
 void showSnackBar(BuildContext context, String message) {
-  try {
-    ScaffoldMessenger.of(context)
-      ..hideCurrentSnackBar()
-      ..showSnackBar(
-        SnackBar(
-          content: Text(message),
-        ),
-      );
-  } catch (e) {
-    print(e.toString());
-  }
+  ScaffoldMessenger.of(context)
+    ..hideCurrentSnackBar()
+    ..showSnackBar(
+      SnackBar(
+        content: Text(message),
+      ),
+    );
 }
   
 // void showSnackBar(BuildContext context, String content) {

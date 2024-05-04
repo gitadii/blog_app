@@ -1,23 +1,24 @@
-import 'package:blog_app/features/bloc/domain/entities/blog_entity.dart';
+import 'package:blog_app/features/blog/domain/entities/blog_entity.dart';
 
 class BlogModel extends BlogEntity {
   BlogModel({
     required super.id,
     required super.imageUrl,
     required super.posterId,
-    required super.blogTitle,
-    required super.blogContent,
-    required super.blogCatrgories,
+    required super.title,
+    required super.content,
+    required super.topics,
     required super.updatedAt,
   });
 
   Map<String, dynamic> toJson() {
     return <String, dynamic>{
+      'id': id,
       'image_url': imageUrl,
       'poster_id': posterId,
-      'blog_title': blogTitle,
-      'blog_content': blogContent,
-      'blog_catrgories': blogCatrgories,
+      'title': title,
+      'content': content,
+      'topics': topics,
       'updated_at': updatedAt.toIso8601String(),
     };
   }
@@ -27,9 +28,9 @@ class BlogModel extends BlogEntity {
       id: map['id'] as String,
       imageUrl: map['image_url'] as String,
       posterId: map['poster_id'] as String,
-      blogTitle: map['blog_title'] as String,
-      blogContent: map['blog_content'] as String,
-      blogCatrgories: List<String>.from(map['blog_catrgories'] ?? []),
+      title: map['title'] as String,
+      content: map['content'] as String,
+      topics: List<String>.from(map['topics'] ?? []),
       updatedAt: map['updated_at'] == null
           ? DateTime.now()
           : DateTime.parse(map['updated_at']),
@@ -40,18 +41,18 @@ class BlogModel extends BlogEntity {
     String? id,
     String? imageUrl,
     String? posterId,
-    String? blogTitle,
-    String? blogContent,
-    List<String>? blogCatrgories,
+    String? title,
+    String? content,
+    List<String>? topics,
     DateTime? updatedAt,
   }) {
     return BlogModel(
       id: id ?? this.id,
       imageUrl: imageUrl ?? this.imageUrl,
       posterId: posterId ?? this.posterId,
-      blogTitle: blogTitle ?? this.blogTitle,
-      blogContent: blogContent ?? this.blogContent,
-      blogCatrgories: blogCatrgories ?? this.blogCatrgories,
+      title: title ?? this.title,
+      content: content ?? this.content,
+      topics: topics ?? this.topics,
       updatedAt: updatedAt ?? this.updatedAt,
     );
   }

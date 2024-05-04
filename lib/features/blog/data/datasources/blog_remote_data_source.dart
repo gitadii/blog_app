@@ -1,10 +1,9 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:io';
 
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:blog_app/core/error/exceptions.dart';
-import 'package:blog_app/features/bloc/data/models/blog_model.dart';
+import 'package:blog_app/features/blog/data/models/blog_model.dart';
 
 abstract interface class BlogRemoteDataSource {
   Future<BlogModel> uploadBlog(BlogModel blogModel);
