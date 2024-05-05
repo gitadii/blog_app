@@ -1,18 +1,30 @@
 import 'dart:io';
 
+import 'package:blog_app/core/constants/constants.dart';
+import 'package:fpdart/fpdart.dart';
+import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
+import 'package:uuid/uuid.dart';
+
 import 'package:blog_app/core/error/exceptions.dart';
 import 'package:blog_app/core/error/failure.dart';
+import 'package:blog_app/core/network/connection_checker.dart';
+import 'package:blog_app/features/blog/data/datasources/blog_local_data_source.dart';
 import 'package:blog_app/features/blog/data/datasources/blog_remote_data_source.dart';
 import 'package:blog_app/features/blog/data/models/blog_model.dart';
 import 'package:blog_app/features/blog/domain/entities/blog_entity.dart';
 import 'package:blog_app/features/blog/domain/repositories/blog_repository.dart';
-import 'package:fpdart/fpdart.dart';
-import 'package:uuid/uuid.dart';
 
 class BlogRepositoryImpl implements BlogRepository {
   BlogRemoteDataSource blogRemoteDataSource;
-  BlogRepositoryImpl({required this.blogRemoteDataSource});
+  BlogLocalDataSource blogLocalDataSource;
+  ConnectionChecker connectionChecker;
+  BlogRepositoryImpl({
+    required this.blogRemoteDataSource,
+    required this.blogLocalDataSource,
+    required this.connectionChecker,
+  });
 
+//TODO: local storage not working!
   @override
   Future<Either<Failure, BlogEntity>> uploadBlog({
     required File imageUrl,
@@ -22,6 +34,9 @@ class BlogRepositoryImpl implements BlogRepository {
     required List<String> topics,
   }) async {
     try {
+      if (!await connectionChecker.isConnected) {
+        return left(Failure(Constants.noConnectionMessage));
+      }
       BlogModel blogModel = BlogModel(
         id: const Uuid().v1(), // Generating a random uuid
         imageUrl: '',
@@ -52,7 +67,13 @@ class BlogRepositoryImpl implements BlogRepository {
   @override
   Future<Either<Failure, List<BlogEntity>>> getAllBlogs() async {
     try {
+      if (!await connectionChecker.isConnected) {
+        final blogs = blogLocalDataSource.loadBlogs();
+        return right(blogs);
+      }
+
       final blogs = await blogRemoteDataSource.getAllBlogs();
+      blogLocalDataSource.uploadBlogs(blogs);
 
       return right(blogs);
     } on ServerExceptions catch (e) {
