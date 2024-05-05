@@ -32,7 +32,6 @@ class BlogRepositoryImpl implements BlogRepository {
         updatedAt: DateTime.now(),
       );
 
-      print(blogModel.id);
       final image = await blogRemoteDataSource.uploadBlogImg(
         image: imageUrl,
         blogModel: blogModel,
@@ -47,6 +46,17 @@ class BlogRepositoryImpl implements BlogRepository {
       return right(uploadedBlog);
     } on ServerExceptions catch (e) {
       return left(Failure(e.message));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<BlogEntity>>> getAllBlogs() async {
+    try {
+      final blogs = await blogRemoteDataSource.getAllBlogs();
+
+      return right(blogs);
+    } on ServerExceptions catch (e) {
+      return left(Failure(e.toString()));
     }
   }
 }

@@ -6,6 +6,7 @@ class BlogEntity {
   final String content;
   final List<String> topics;
   final DateTime updatedAt;
+  final String? posterName;
 
   BlogEntity({
     required this.id,
@@ -15,5 +16,6 @@ class BlogEntity {
     required this.content,
     required this.topics,
     required this.updatedAt,
+    this.posterName,
   });
 }

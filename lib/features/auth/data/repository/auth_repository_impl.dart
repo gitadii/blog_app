@@ -1,5 +1,7 @@
 import 'package:blog_app/core/error/exceptions.dart';
 import 'package:blog_app/core/error/failure.dart';
+import 'package:blog_app/core/network/connection_checker.dart';
+import 'package:blog_app/features/auth/data/Models/user_model.dart';
 import 'package:blog_app/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:blog_app/core/common/entities/user_entity.dart';
 import 'package:blog_app/features/auth/domain/repository/auth_repository.dart';
@@ -8,7 +10,11 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteDataSource remoteDataSource;
-  AuthRepositoryImpl({required this.remoteDataSource});
+  final ConnectionChecker connectionChecker;
+  AuthRepositoryImpl({
+    required this.connectionChecker,
+    required this.remoteDataSource,
+  });
 
   // Login
   @override
@@ -41,6 +47,22 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<Either<Failure, UserEntity>> currentUser() async {
     try {
+      if (!await connectionChecker.isConnected) {
+        final curUserSession = remoteDataSource.currentUserSession;
+
+        if (curUserSession == null) {
+          return left(Failure("The user is not logged in!"));
+        }
+
+        return right(
+          UserModel(
+            id: curUserSession.user.id,
+            email: curUserSession.user.email ?? '',
+            name: '',
+          ),
+        );
+      }
+
       final user = await remoteDataSource.getCurrentUserData();
       if (user == null) {
         return left(Failure("The user is not logged in!"));
@@ -55,6 +77,10 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<Either<Failure, UserEntity>> _getUser(
       Future<UserEntity> Function() fn) async {
     try {
+      if (!await connectionChecker.isConnected) {
+        left(Failure('No Internet Connection'));
+      }
+
       final userEntity = await fn();
       return right(userEntity);
     } on AuthException catch (e) {
