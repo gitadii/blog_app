@@ -8,6 +8,7 @@ import 'package:blog_app/features/auth/domain/usecases/current_user.dart';
 import 'package:blog_app/features/auth/domain/usecases/user_login.dart';
 import 'package:blog_app/features/auth/domain/usecases/user_sign_up.dart';
 import 'package:blog_app/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:blog_app/features/blog/data/datasources/blog_local_data_source.dart';
 import 'package:blog_app/features/blog/data/datasources/blog_remote_data_source.dart';
 import 'package:blog_app/features/blog/data/repository/blog_repository_impl.dart';
 import 'package:blog_app/features/blog/domain/usecases/get_all_blogs.dart';
@@ -15,119 +16,9 @@ import 'package:blog_app/features/blog/domain/usecases/upload_new_blog.dart';
 import 'package:blog_app/features/blog/domain/repositories/blog_repository.dart';
 import 'package:blog_app/features/blog/presentation/bloc/blog_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:hive/hive.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-final serviceLocator = GetIt.instance;
-
-Future<void> initDependencies() async {
-  _initAuth();
-  _initBlog();
-
-  final supabase = await Supabase.initialize(
-    url: SupaBaseCreds.supabaseUrl,
-    anonKey: SupaBaseCreds.supabaseAnonKey,
-  );
-
-  // Dependency of supabase.client
-  serviceLocator.registerLazySingleton(() => supabase.client);
-
-  // Internet Connection
-  serviceLocator.registerFactory(
-    () => InternetConnection(),
-  );
-
-  // Core
-  serviceLocator.registerLazySingleton(() => AppUserCubit());
-
-  serviceLocator.registerFactory<ConnectionChecker>(
-      () => ConnectionCheckerImpl(internetConnection: serviceLocator()));
-}
-
-void _initAuth() {
-  // Dependency of RemoteDataSource
-  serviceLocator
-    ..registerFactory<AuthRemoteDataSource>(
-      () => AuthRemoteDataSourceImpl(
-        supabaseClient: serviceLocator(),
-      ),
-    )
-
-    // Dep of AuthRepo
-    ..registerFactory<AuthRepository>(
-      () => AuthRepositoryImpl(
-        remoteDataSource: serviceLocator(),
-        connectionChecker: serviceLocator(),
-      ),
-    )
-
-    // Dep of UserSignUp
-    ..registerFactory(
-      () => UserSignUp(
-        authRepository: serviceLocator(),
-      ),
-    )
-
-    // Dep of UserLogIn
-    ..registerFactory(
-      () => UserLogIn(
-        authRepository: serviceLocator(),
-      ),
-    )
-
-    // Dep of CurrentUser
-    ..registerFactory(
-      () => CurrentUser(
-        authRepository: serviceLocator(),
-      ),
-    );
-
-  // Dep of AuthBloc
-  // It is LazySingleton because we dont want multiple states in our app, e.g. it the app is in Loading state and another
-  // instance of AuthBloc is created then it will again go in Initialization state.
-  serviceLocator.registerLazySingleton(
-    () => AuthBloc(
-      userSignUp: serviceLocator(),
-      userLogIn: serviceLocator(),
-      currentUser: serviceLocator(),
-      appUserCubit: serviceLocator(),
-    ),
-  );
-}
-
-void _initBlog() {
-  //DataSource
-  serviceLocator
-    ..registerLazySingleton<BlogRemoteDataSource>(
-      () => BlogRemoteDataSourceImpl(
-        supabaseClient: serviceLocator(),
-      ),
-    )
-
-    //Repository
-    ..registerFactory<BlogRepository>(
-      () => BlogRepositoryImpl(
-        blogRemoteDataSource: serviceLocator(),
-      ),
-    )
-
-    //Usecases
-    ..registerFactory(
-      () => UploadBlogUsecase(
-        blogRepository: serviceLocator(),
-      ),
-    )
-    ..registerFactory(
-      () => GetAllBlogsUseCase(
-        blogRepository: serviceLocator(),
-      ),
-    )
-
-    //Bloc
-    ..registerLazySingleton(
-      () => BlogBloc(
-        uploadBlogUsecase: serviceLocator(),
-        getAllBlogsUseCase: serviceLocator(),
-      ),
-    );
-}
+part 'init_dependencies.main.dart';

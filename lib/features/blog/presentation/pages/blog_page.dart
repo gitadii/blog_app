@@ -4,6 +4,7 @@ import 'package:blog_app/core/utils/show_snackbar.dart';
 import 'package:blog_app/features/blog/presentation/bloc/blog_bloc.dart';
 import 'package:blog_app/features/blog/presentation/pages/add_new_blog_page.dart';
 import 'package:blog_app/features/blog/presentation/widgets/blog_card.dart';
+import 'package:blog_app/features/blog/presentation/widgets/side_drawer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -23,18 +24,22 @@ class _BlogPageState extends State<BlogPage> {
   @override
   void initState() {
     super.initState();
-    _reinitialize();
-  }
-
-  void _reinitialize() {
     context.read<BlogBloc>().add(BlogFetchAllBlogEvent());
   }
 
   @override
   Widget build(BuildContext context) {
-    // _reinitialize(); //TODO
     return Scaffold(
+      drawer: const SideDrawer(),
       appBar: AppBar(
+        leading: Builder(builder: (context) {
+          return IconButton(
+            onPressed: () {
+              Scaffold.of(context).openDrawer();
+            },
+            icon: const Icon(CupertinoIcons.profile_circled),
+          );
+        }),
         title: const Center(
           child: Text('Blog App'),
         ),
