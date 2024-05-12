@@ -23,7 +23,7 @@ Future<void> initDependencies() async {
 
   // Hive Box
   serviceLocator.registerLazySingleton(
-    () => Hive.box(name: 'blogs'),
+    () => Hive.box(name: Constants.blogsBox),
   );
 
   // Core

@@ -1,5 +1,8 @@
 import 'dart:io';
 
+import 'package:blog_app/core/constants/supabase/supabase_constants.dart';
+import 'package:blog_app/core/constants/supabase/supabase_quries.dart';
+import 'package:blog_app/core/constants/supabase/supabase_table_fields.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:blog_app/core/error/exceptions.dart';
@@ -42,11 +45,11 @@ class BlogRemoteDataSourceImpl implements BlogRemoteDataSource {
   }) async {
     try {
       await supabaseClient.storage
-          .from('blog_images')
+          .from(SupaBaseConstants.blogImageBucketId)
           .upload(blogModel.id, image);
 
       return supabaseClient.storage
-          .from('blog_images')
+          .from(SupaBaseConstants.blogImageBucketId)
           .getPublicUrl(blogModel.id);
     } catch (e) {
       throw ServerExceptions(message: e.toString());
@@ -56,12 +59,14 @@ class BlogRemoteDataSourceImpl implements BlogRemoteDataSource {
   @override
   Future<List<BlogModel>> getAllBlogs() async {
     try {
-      final blogs =
-          await supabaseClient.from('blogs').select('*, profiles (name)');
+      final blogs = await supabaseClient
+          .from(SupaBaseConstants.blogsTable)
+          .select(SupaBaseQuries.getAllBlogs);
       return blogs
           .map(
             (blog) => BlogModel.fromJson(blog).copyWith(
-              posterId: blog['profiles']['name'],
+              posterName: blog[SupaBaseConstants.profileTable]
+                  [TableFields.name],
             ),
           )
           .toList();

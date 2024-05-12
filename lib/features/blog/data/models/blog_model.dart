@@ -1,3 +1,4 @@
+import 'package:blog_app/core/constants/supabase/supabase_table_fields.dart';
 import 'package:blog_app/features/blog/domain/entities/blog_entity.dart';
 
 class BlogModel extends BlogEntity {
@@ -9,31 +10,32 @@ class BlogModel extends BlogEntity {
     required super.content,
     required super.topics,
     required super.updatedAt,
+    super.posterName,
   });
 
   Map<String, dynamic> toJson() {
     return <String, dynamic>{
-      'id': id,
-      'image_url': imageUrl,
-      'poster_id': posterId,
-      'title': title,
-      'content': content,
-      'topics': topics,
-      'updated_at': updatedAt.toIso8601String(),
+      TableFields.id: id,
+      TableFields.imageUrl: imageUrl,
+      TableFields.posterId: posterId,
+      TableFields.title: title,
+      TableFields.content: content,
+      TableFields.topics: topics,
+      TableFields.updatedAt: updatedAt.toIso8601String(),
     };
   }
 
   factory BlogModel.fromJson(Map<String, dynamic> map) {
     return BlogModel(
-      id: map['id'] as String,
-      imageUrl: map['image_url'] as String,
-      posterId: map['poster_id'] as String,
-      title: map['title'] as String,
-      content: map['content'] as String,
-      topics: List<String>.from(map['topics'] ?? []),
-      updatedAt: map['updated_at'] == null
+      id: map[TableFields.id] as String,
+      imageUrl: map[TableFields.imageUrl] as String,
+      posterId: map[TableFields.posterId] as String,
+      title: map[TableFields.title] as String,
+      content: map[TableFields.content] as String,
+      topics: List<String>.from(map[TableFields.title] ?? []),
+      updatedAt: map[TableFields.updatedAt] == null
           ? DateTime.now()
-          : DateTime.parse(map['updated_at']),
+          : DateTime.parse(map[TableFields.updatedAt]),
     );
   }
 
@@ -45,6 +47,7 @@ class BlogModel extends BlogEntity {
     String? content,
     List<String>? topics,
     DateTime? updatedAt,
+    String? posterName,
   }) {
     return BlogModel(
       id: id ?? this.id,
@@ -54,6 +57,7 @@ class BlogModel extends BlogEntity {
       content: content ?? this.content,
       topics: topics ?? this.topics,
       updatedAt: updatedAt ?? this.updatedAt,
+      posterName: posterName ?? this.posterName,
     );
   }
 }

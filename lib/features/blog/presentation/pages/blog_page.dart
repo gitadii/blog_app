@@ -30,7 +30,7 @@ class _BlogPageState extends State<BlogPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: const SideDrawer(),
+      drawer: const SideDrawer(), // TODO: Logout functionality
       appBar: AppBar(
         leading: Builder(builder: (context) {
           return IconButton(

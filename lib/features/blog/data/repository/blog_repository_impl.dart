@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:blog_app/core/constants/constants.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:blog_app/core/error/exceptions.dart';

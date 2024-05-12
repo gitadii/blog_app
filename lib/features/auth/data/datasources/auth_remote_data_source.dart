@@ -1,3 +1,5 @@
+import 'package:blog_app/core/constants/constants.dart';
+import 'package:blog_app/core/constants/supabase/supabase_constants.dart';
 import 'package:blog_app/core/error/exceptions.dart';
 import 'package:blog_app/features/auth/data/Models/user_model.dart';
 import 'package:blog_app/core/common/entities/user_entity.dart';
@@ -39,7 +41,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         email: email,
       );
       if (responce.user == null) {
-        throw ServerExceptions(message: "The User is null!");
+        throw ServerExceptions(message: Constants.userIsNull);
       }
       return UserModel.fromJson(responce.user!.toJson()).copyWith(
         email: currentUserSession!.user.email,
@@ -61,7 +63,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         'name': name,
       });
       if (responce.user == null) {
-        throw ServerExceptions(message: "The User is null!");
+        throw ServerExceptions(message: Constants.userIsNull);
       }
       return UserModel.fromJson(responce.user!.toJson()).copyWith(
         email: currentUserSession!.user.email,
@@ -76,8 +78,11 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   Future<UserModel?> getCurrentUserData() async {
     try {
       if (currentUserSession != null) {
-        final userData = await supabaseClient.from('profiles').select().eq(
-              'id',
+        final userData = await supabaseClient
+            .from(SupaBaseConstants.profileTable)
+            .select()
+            .eq(
+              SupaBaseConstants.id,
               currentUserSession!.user.id,
             );
 
