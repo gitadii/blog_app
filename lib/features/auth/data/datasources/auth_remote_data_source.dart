@@ -21,6 +21,9 @@ abstract interface class AuthRemoteDataSource {
 
   // Getting the current userdata to persist the LoggedIn session
   Future<UserModel?> getCurrentUserData();
+
+  // Logout
+  Future<void> logOutUser();
 }
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
@@ -58,10 +61,13 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       required String email,
       required String password}) async {
     try {
-      final responce = await supabaseClient.auth
-          .signUp(password: password, email: email, data: {
-        'name': name,
-      });
+      final responce = await supabaseClient.auth.signUp(
+        password: password,
+        email: email,
+        data: {
+          'name': name,
+        },
+      );
       if (responce.user == null) {
         throw ServerExceptions(message: Constants.userIsNull);
       }
@@ -91,6 +97,16 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         );
       }
       return null;
+    } catch (e) {
+      throw ServerExceptions(message: e.toString());
+    }
+  }
+
+  // Logout
+  @override
+  Future<void> logOutUser() async {
+    try {
+      return await supabaseClient.auth.signOut();
     } catch (e) {
       throw ServerExceptions(message: e.toString());
     }

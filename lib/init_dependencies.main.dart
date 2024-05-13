@@ -69,6 +69,13 @@ void _initAuth() {
       () => CurrentUser(
         authRepository: serviceLocator(),
       ),
+    )
+
+    // Dep of UserLogout
+    ..registerFactory(
+      () => UserLogout(
+        authRepository: serviceLocator(),
+      ),
     );
 
   // Dep of AuthBloc
@@ -80,6 +87,7 @@ void _initAuth() {
       userLogIn: serviceLocator(),
       currentUser: serviceLocator(),
       appUserCubit: serviceLocator(),
+      userLogOut: serviceLocator(),
     ),
   );
 }

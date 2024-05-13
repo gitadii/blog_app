@@ -45,6 +45,7 @@ class AuthRepositoryImpl implements AuthRepository {
     );
   }
 
+  // Checking if the user if already logged in
   @override
   Future<Either<Failure, UserEntity>> currentUser() async {
     try {
@@ -84,6 +85,18 @@ class AuthRepositoryImpl implements AuthRepository {
 
       final userEntity = await fn();
       return right(userEntity);
+    } on AuthException catch (e) {
+      return left(Failure(e.message));
+    } on ServerExceptions catch (e) {
+      return left(Failure(e.message));
+    }
+  }
+
+  // Logout
+  @override
+  Future<Either<Failure, Future<void>>> logOutUser() async {
+    try {
+      return right(remoteDataSource.logOutUser());
     } on AuthException catch (e) {
       return left(Failure(e.message));
     } on ServerExceptions catch (e) {

@@ -18,4 +18,7 @@ abstract interface class AuthRepository {
 
   // Getting userData to check if the user is loggedIn or not
   Future<Either<Failure, UserEntity>> currentUser();
+
+  // Logout
+  Future<Either<Failure, Future<void>>> logOutUser();
 }

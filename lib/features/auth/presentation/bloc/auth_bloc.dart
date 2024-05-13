@@ -3,6 +3,7 @@ import 'package:blog_app/core/usecases/usecase_interf.dart';
 import 'package:blog_app/core/common/entities/user_entity.dart';
 import 'package:blog_app/features/auth/domain/usecases/current_user.dart';
 import 'package:blog_app/features/auth/domain/usecases/user_login.dart';
+import 'package:blog_app/features/auth/domain/usecases/user_logout.dart';
 import 'package:blog_app/features/auth/domain/usecases/user_sign_up.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,16 +16,19 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final UserLogIn _userLogin;
   final CurrentUser _currentUser;
   final AppUserCubit _appUserCubit;
+  final UserLogout _userLogout;
 
   AuthBloc({
     required UserSignUp userSignUp,
     required UserLogIn userLogIn,
     required CurrentUser currentUser,
     required AppUserCubit appUserCubit,
+    required UserLogout userLogOut,
   })  : _userSignUp = userSignUp,
         _userLogin = userLogIn,
         _currentUser = currentUser,
         _appUserCubit = appUserCubit,
+        _userLogout = userLogOut,
         super(AuthInitial()) {
     // When there is an event of AuthSignUp then do this :
     // on<AuthEvent>(_emitAuthLoading as EventHandler<AuthEvent, AuthState>);
@@ -33,6 +37,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AuthSignUp>(_onAuthSignUp);
     on<AuthLogIn>(_onAuthLogIn);
     on<AuthIsUserLoggedIn>(_onAuthIsUserLoggedIn);
+    on<AuthLogOut>(_onAuthLogOut);
   }
 
 // FUCNTIONS TO MAKE CODE CLEAN
@@ -92,6 +97,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async {
     _appUserCubit.updateUser(userEntity);
     emit(AuthSucess(userEntity));
+  }
+
+  void _onAuthLogOut(AuthLogOut event, Emitter<AuthState> emit) async {
+    final res = await _userLogout(NoParams());
+
+    res.fold(
+      (l) => emit(AuthFailure(l.message)),
+      (r) => emit(AuthLoggedOut()),
+    );
   }
 
   // void _emitAuthLoading(Emitter<AuthState> emit) {

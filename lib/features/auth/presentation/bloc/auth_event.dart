@@ -5,6 +5,7 @@ sealed class AuthEvent {
   const AuthEvent();
 }
 
+// Sign up
 final class AuthSignUp extends AuthEvent {
   final String name;
   final String email;
@@ -17,6 +18,7 @@ final class AuthSignUp extends AuthEvent {
   });
 }
 
+// Log in
 final class AuthLogIn extends AuthEvent {
   final String email;
   final String password;
@@ -27,4 +29,8 @@ final class AuthLogIn extends AuthEvent {
   });
 }
 
+// Is user logged in?
 final class AuthIsUserLoggedIn extends AuthEvent {}
+
+// Logout
+final class AuthLogOut extends AuthEvent {}
