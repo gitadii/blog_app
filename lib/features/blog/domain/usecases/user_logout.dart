@@ -1,14 +1,14 @@
 import 'package:blog_app/core/error/failure.dart';
 import 'package:blog_app/core/usecases/usecase_interf.dart';
-import 'package:blog_app/features/auth/domain/repository/auth_repository.dart';
+import 'package:blog_app/features/blog/domain/repositories/blog_repository.dart';
 import 'package:fpdart/fpdart.dart';
 
 class UserLogout implements UseCase<Future<void>, NoParams> {
-  AuthRepository authRepository;
-  UserLogout({required this.authRepository});
+  BlogRepository blogRepository;
+  UserLogout({required this.blogRepository});
 
   @override
   Future<Either<Failure, Future<void>>> call(params) async {
-    return await authRepository.logOutUser();
+    return await blogRepository.logOutUser();
   }
 }

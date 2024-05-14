@@ -31,6 +31,3 @@ final class AuthLogIn extends AuthEvent {
 
 // Is user logged in?
 final class AuthIsUserLoggedIn extends AuthEvent {}
-
-// Logout
-final class AuthLogOut extends AuthEvent {}

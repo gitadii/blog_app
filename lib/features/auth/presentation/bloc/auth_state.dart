@@ -22,6 +22,3 @@ final class AuthFailure extends AuthState {
   final String message;
   const AuthFailure(this.message);
 }
-
-// Logout
-final class AuthLoggedOut extends AuthState {}

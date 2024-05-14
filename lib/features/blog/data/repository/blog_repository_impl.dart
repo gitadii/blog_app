@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:blog_app/core/constants/constants.dart';
 import 'package:fpdart/fpdart.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:blog_app/core/error/exceptions.dart';
@@ -24,6 +25,7 @@ class BlogRepositoryImpl implements BlogRepository {
   });
 
 //TODO: local storage not working!
+// Uploading blog
   @override
   Future<Either<Failure, BlogEntity>> uploadBlog({
     required File imageUrl,
@@ -63,6 +65,7 @@ class BlogRepositoryImpl implements BlogRepository {
     }
   }
 
+// Retrieving all blogs
   @override
   Future<Either<Failure, List<BlogEntity>>> getAllBlogs() async {
     try {
@@ -77,6 +80,18 @@ class BlogRepositoryImpl implements BlogRepository {
       return right(blogs);
     } on ServerExceptions catch (e) {
       return left(Failure(e.toString()));
+    }
+  }
+
+  // Logout
+  @override
+  Future<Either<Failure, Future<void>>> logOutUser() async {
+    try {
+      return right(blogRemoteDataSource.logOutUser());
+    } on AuthException catch (e) {
+      return left(Failure(e.message));
+    } on ServerExceptions catch (e) {
+      return left(Failure(e.message));
     }
   }
 }

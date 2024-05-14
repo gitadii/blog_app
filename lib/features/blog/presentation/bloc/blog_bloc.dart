@@ -4,6 +4,7 @@ import 'package:blog_app/core/usecases/usecase_interf.dart';
 import 'package:blog_app/features/blog/domain/entities/blog_entity.dart';
 import 'package:blog_app/features/blog/domain/usecases/get_all_blogs.dart';
 import 'package:blog_app/features/blog/domain/usecases/upload_new_blog.dart';
+import 'package:blog_app/features/blog/domain/usecases/user_logout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -13,16 +14,20 @@ part 'blog_state.dart';
 class BlogBloc extends Bloc<BlogEvent, BlogState> {
   final UploadBlogUsecase _uploadBlogUsecase;
   final GetAllBlogsUseCase _getAllBlogsUseCase;
+  final UserLogout _userLogout;
 
-  BlogBloc(
-      {required UploadBlogUsecase uploadBlogUsecase,
-      required GetAllBlogsUseCase getAllBlogsUseCase})
-      : _uploadBlogUsecase = uploadBlogUsecase,
+  BlogBloc({
+    required UploadBlogUsecase uploadBlogUsecase,
+    required GetAllBlogsUseCase getAllBlogsUseCase,
+    required UserLogout userLogout,
+  })  : _uploadBlogUsecase = uploadBlogUsecase,
         _getAllBlogsUseCase = getAllBlogsUseCase,
+        _userLogout = userLogout,
         super(BlogInitial()) {
     on<BlogEvent>((event, emit) => emit(BlogLoading()));
     on<BlogUploadEvent>(_onBlogUploadEvent);
     on<BlogFetchAllBlogEvent>(_onGetAllBlogEvent);
+    on<BlogAuthLogOut>(_onAuthLogOut);
   }
 
   void _onBlogUploadEvent(
@@ -50,6 +55,15 @@ class BlogBloc extends Bloc<BlogEvent, BlogState> {
     res.fold(
       (l) => emit(BlogFailure(error: l.message)),
       (r) => emit(BlogDisplaySuccess(blogs: r)),
+    );
+  }
+
+  void _onAuthLogOut(BlogAuthLogOut event, Emitter<BlogState> emit) async {
+    final res = await _userLogout(NoParams());
+
+    res.fold(
+      (l) => emit(BlogFailure(error: l.message)),
+      (r) => emit(BlogAuthLoggedOut()),
     );
   }
 }

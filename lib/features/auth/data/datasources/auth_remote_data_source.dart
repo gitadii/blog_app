@@ -21,9 +21,6 @@ abstract interface class AuthRemoteDataSource {
 
   // Getting the current userdata to persist the LoggedIn session
   Future<UserModel?> getCurrentUserData();
-
-  // Logout
-  Future<void> logOutUser();
 }
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
@@ -97,16 +94,6 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         );
       }
       return null;
-    } catch (e) {
-      throw ServerExceptions(message: e.toString());
-    }
-  }
-
-  // Logout
-  @override
-  Future<void> logOutUser() async {
-    try {
-      return await supabaseClient.auth.signOut();
     } catch (e) {
       throw ServerExceptions(message: e.toString());
     }

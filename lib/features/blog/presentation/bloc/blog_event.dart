@@ -20,3 +20,6 @@ final class BlogUploadEvent extends BlogEvent {
 }
 
 final class BlogFetchAllBlogEvent extends BlogEvent {}
+
+// Logout
+final class BlogAuthLogOut extends BlogEvent {}

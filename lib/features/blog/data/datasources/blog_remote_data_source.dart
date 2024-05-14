@@ -9,12 +9,20 @@ import 'package:blog_app/core/error/exceptions.dart';
 import 'package:blog_app/features/blog/data/models/blog_model.dart';
 
 abstract interface class BlogRemoteDataSource {
+  // Uploading blog
   Future<BlogModel> uploadBlog(BlogModel blogModel);
+
+// Uploading image
   Future<String> uploadBlogImg({
     required File image,
     required BlogModel blogModel,
   });
+
+  // Retrieving blogs
   Future<List<BlogModel>> getAllBlogs();
+
+  // Logout
+  Future<void> logOutUser();
 }
 
 class BlogRemoteDataSourceImpl implements BlogRemoteDataSource {
@@ -38,6 +46,7 @@ class BlogRemoteDataSourceImpl implements BlogRemoteDataSource {
     }
   }
 
+// Uploading blog Image to storage bucket
   @override
   Future<String> uploadBlogImg({
     required File image,
@@ -56,6 +65,7 @@ class BlogRemoteDataSourceImpl implements BlogRemoteDataSource {
     }
   }
 
+// Retrieving all the blogs
   @override
   Future<List<BlogModel>> getAllBlogs() async {
     try {
@@ -70,6 +80,16 @@ class BlogRemoteDataSourceImpl implements BlogRemoteDataSource {
             ),
           )
           .toList();
+    } catch (e) {
+      throw ServerExceptions(message: e.toString());
+    }
+  }
+
+  // Logout
+  @override
+  Future<void> logOutUser() async {
+    try {
+      return await supabaseClient.auth.signOut();
     } catch (e) {
       throw ServerExceptions(message: e.toString());
     }

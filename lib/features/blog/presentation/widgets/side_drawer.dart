@@ -1,7 +1,7 @@
 import 'package:blog_app/core/common/widgets/loader.dart';
 import 'package:blog_app/core/utils/show_snackbar.dart';
-import 'package:blog_app/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:blog_app/features/auth/presentation/pages/login_page.dart';
+import 'package:blog_app/features/blog/presentation/bloc/blog_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -10,11 +10,11 @@ class SideDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<AuthBloc, AuthState>(
+    return BlocConsumer<BlogBloc, BlogState>(
       listener: (context, state) {
-        if (state is AuthFailure) {
-          showSnackBar(context, state.message);
-        } else if (state is AuthLoggedOut) {
+        if (state is BlogFailure) {
+          showSnackBar(context, state.error);
+        } else if (state is BlogAuthLoggedOut) {
           Navigator.of(context).pushNamedAndRemoveUntil(
             LoginPage.route(),
             (route) => false,
@@ -23,7 +23,7 @@ class SideDrawer extends StatelessWidget {
         }
       },
       builder: (context, state) {
-        if (state is AuthLoading) {
+        if (state is BlogLoading) {
           return const Loader();
         }
         return Drawer(
@@ -35,7 +35,7 @@ class SideDrawer extends StatelessWidget {
                   title: const Text('Logout.'),
                   trailing: IconButton(
                     onPressed: () {
-                      context.read<AuthBloc>().add(AuthLogOut());
+                      context.read<BlogBloc>().add(BlogAuthLogOut());
                     },
                     icon: const Icon(Icons.logout_outlined),
                   ),
